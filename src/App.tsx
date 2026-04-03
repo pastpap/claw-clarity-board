@@ -21,91 +21,115 @@ const roadmapTone: Record<RoadmapStatus, string> = {
 }
 
 function App() {
-  const [selectedProjectId, setSelectedProjectId] = useState(projects[0]?.project.id ?? '')
-  const selectedProject = useMemo(() => getProjectById(selectedProjectId) ?? projects[0], [selectedProjectId])
+  const [activeSection] = useState<'projects'>('projects')
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const selectedProject = useMemo(
+    () => (selectedProjectId ? getProjectById(selectedProjectId) ?? null : null),
+    [selectedProjectId],
+  )
 
   return (
-    <div className="board-shell">
-      <header className="board-header">
+    <div className="dashboard-shell">
+      <header className="dashboard-header">
         <div>
           <p className="eyebrow">Claw Clarity Board</p>
           <h1>Project knowledge, not just task status.</h1>
-          <p className="header-copy">
-            A visual layer over structured project summaries, roadmap direction, and recent milestones.
-          </p>
         </div>
-        <div className="header-meta-card">
+        <div className="header-meta-pill">
           <span className="meta-label">Projects tracked</span>
           <strong>{projects.length}</strong>
-          <span className="meta-subtle">Docs-backed snapshots with human-readable YAML</span>
         </div>
       </header>
 
-      <main className="board-layout">
-        <section className="project-list-panel">
-          <div className="section-heading-row">
-            <h2>Portfolio</h2>
-            <span className="section-hint">Current summaries</span>
-          </div>
-          <div className="project-list">
-            {projects.map((project) => (
-              <button
-                key={project.project.id}
-                className={`project-card ${selectedProjectId === project.project.id ? 'selected' : ''}`}
-                onClick={() => setSelectedProjectId(project.project.id)}
-              >
-                <div className="project-card-top">
-                  <div>
-                    <h3>{project.project.name}</h3>
-                    <p>{project.identity.one_liner}</p>
-                  </div>
-                  <StatusBadge label={project.project.status} tone={statusTone[project.project.status]} />
-                </div>
-                <div className="project-card-section">
-                  <span className="label">Current phase</span>
-                  <strong>{project.identity.current_phase}</strong>
-                </div>
-                <div className="project-card-section">
-                  <span className="label">Current focus</span>
-                  <ul>
-                    {project.current_state.focus.slice(0, 3).map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="project-card-footer">
-                  <span>Updated {project.sync.last_updated}</span>
-                  <span>{project.sync.confidence} confidence</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </section>
+      <div className="dashboard-body">
+        <aside className="dashboard-sidebar">
+          <div className="sidebar-section-title">Navigation</div>
+          <button className={`sidebar-nav-item ${activeSection === 'projects' ? 'active' : ''}`}>
+            <span className="sidebar-nav-dot" />
+            <span>Projects</span>
+          </button>
+        </aside>
 
-        {selectedProject && <ProjectDetail project={selectedProject} />}
-      </main>
+        <main className="dashboard-main">
+          <div className="dashboard-scroll">
+            {!selectedProject ? (
+              <ProjectListView onSelectProject={setSelectedProjectId} />
+            ) : (
+              <ProjectDetailView project={selectedProject} onBack={() => setSelectedProjectId(null)} />
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   )
 }
 
-function ProjectDetail({ project }: { project: ProjectSummary }) {
+function ProjectListView({ onSelectProject }: { onSelectProject: (projectId: string) => void }) {
   return (
-    <section className="project-detail-panel">
-      <div className="detail-hero card">
-        <div className="detail-hero-main">
-          <p className="eyebrow">{project.project.kind}</p>
-          <h2>{project.project.name}</h2>
-          <p className="detail-summary">{project.current_state.summary}</p>
+    <section className="view-section">
+      <div className="view-header">
+        <div>
+          <p className="section-eyebrow">Projects</p>
+          <h2>Tracked projects</h2>
+          <p className="section-copy">
+            Select a project to view its current phase, roadmap groups, recent milestones, and sync state.
+          </p>
         </div>
-        <div className="detail-hero-meta">
+      </div>
+
+      <div className="project-list-grid">
+        {projects.map((project) => (
+          <button key={project.project.id} className="project-card" onClick={() => onSelectProject(project.project.id)}>
+            <div className="project-card-top">
+              <div>
+                <h3>{project.project.name}</h3>
+                <p>{project.identity.one_liner}</p>
+              </div>
+              <StatusBadge label={project.project.status} tone={statusTone[project.project.status]} />
+            </div>
+
+            <div className="project-card-section">
+              <span className="label">Current phase</span>
+              <strong>{project.identity.current_phase}</strong>
+            </div>
+
+            <div className="project-card-section">
+              <span className="label">Current focus</span>
+              <ul>
+                {project.current_state.focus.slice(0, 3).map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="project-card-footer">
+              <span>Updated {project.sync.last_updated}</span>
+              <span>{project.sync.confidence} confidence</span>
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ProjectDetailView({ project, onBack }: { project: ProjectSummary; onBack: () => void }) {
+  return (
+    <section className="view-section">
+      <div className="view-header detail-view-header">
+        <div>
+          <button className="back-button" onClick={onBack}>
+            ← Back to projects
+          </button>
+          <p className="section-eyebrow">{project.project.kind}</p>
+          <h2>{project.project.name}</h2>
+          <p className="section-copy">{project.current_state.summary}</p>
+        </div>
+        <div className="detail-header-meta">
           <StatusBadge label={project.project.status} tone={statusTone[project.project.status]} />
           <div className="meta-stack">
             <span className="label">Phase</span>
             <strong>{project.identity.current_phase}</strong>
-          </div>
-          <div className="meta-stack">
-            <span className="label">Owner</span>
-            <strong>{project.project.owner}</strong>
           </div>
         </div>
       </div>
