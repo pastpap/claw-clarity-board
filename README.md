@@ -58,6 +58,17 @@ npm install
 npm run dev
 ```
 
+## GitHub Pages
+
+This repo is prepared for GitHub Pages deployment from `main` via GitHub Actions.
+
+The Pages build uses the local `projects/` directory, which means GitHub Pages is appropriate for:
+- public demo data
+- sanitized/sample project summaries
+- open-source preview deployments
+
+It is not appropriate for private project data because anything bundled into the static build becomes public.
+
 ## Data format
 
 See `projects/README.md` for the summary file convention.
