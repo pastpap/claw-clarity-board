@@ -1,0 +1,84 @@
+version: 1
+
+project:
+  id: claw-clarity-board
+  name: Claw Clarity Board
+  kind: internal-tool
+  repo_path: claw-clarity-board
+  status: active
+  visibility: public
+  owner: nipanee
+
+identity:
+  one_liner: Lightweight dashboard for visualizing structured project knowledge from YAML summaries
+  current_phase: Public-mode foundation with private-mode architecture preparation
+  primary_goal: Make project status, roadmap direction, and current assistant knowledge easier to inspect visually
+  primary_users:
+    - nipanee
+    - wall-e
+    - later, other users who want a structured project-knowledge board
+
+current_state:
+  summary: >
+    Claw Clarity Board now has a working Vite/React dashboard, a structured `projects/*.yml`
+    summary format, generated build-time project data, and GitHub Pages deployment for public mode.
+    The intended next architecture is dual-mode: public mode with safe/demo data, and private mode
+    with real project data hosted privately, likely via local hosting and Tailscale.
+  focus:
+    - strengthen the dashboard UI and visual hierarchy
+    - define the dual-mode public/private operating model clearly
+    - prepare for private data repo or local private data source integration
+  blockers: []
+  risks:
+    - public mode must not accidentally include private project data
+    - the dashboard is only as trustworthy as the discipline of keeping project YAML updated
+
+done:
+  recent_milestones:
+    - public repository created and cloned
+    - Vite/React app scaffolded
+    - project summary convention documented in projects/README.md
+    - EthicFlow and Pathlizr summaries created
+    - app refactored to use generated build-time project data
+    - external data-source override added via CLARITY_DATA_DIR
+    - GitHub Pages deployment workflow added and working
+
+next:
+  roadmap_groups:
+    - name: Dashboard UX refinement
+      status: planned
+      items:
+        - improve portfolio overview
+        - improve freshness and confidence indicators
+        - make source links more useful and navigable
+    - name: Public / private mode split
+      status: active
+      items:
+        - keep public mode limited to safe project data
+        - support private project data through external build-time source or local private hosting
+        - define how private mode is hosted via Tailscale
+    - name: Private data workflow
+      status: exploring
+      items:
+        - decide between private data repo and local-only private data source
+        - document update workflow for project YAML files
+    - name: Future broader adoption
+      status: later
+      items:
+        - publish example project summaries
+        - make the pattern useful for others beyond nipanee's workspace
+
+sources:
+  canonical_docs:
+    - README.md
+    - projects/README.md
+    - scripts/build-project-data.mjs
+  memory_refs:
+    - memory/2026-04-03.md
+
+sync:
+  docs_backed: true
+  last_updated: 2026-04-04
+  last_updated_by: wall-e
+  confidence: high
+  needs_review: false

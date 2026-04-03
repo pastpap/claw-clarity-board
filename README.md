@@ -21,9 +21,12 @@ This project is built around a simple layered model:
 
 ## Current scope
 
-V1 tracks:
-- EthicFlow
-- Pathlizr
+### Public mode
+The public GitHub Pages version currently tracks:
+- Claw Clarity Board itself
+
+### Private mode
+Real internal project summaries such as EthicFlow and Pathlizr belong in private mode and should be supplied from a private data source or local private hosting.
 
 ## External build-time data model
 
@@ -35,6 +38,8 @@ By default, the build script reads YAML files from:
 
 and generates:
 - `src/generated/projects.json`
+
+In this public repository, the default local `projects/` directory should contain only public-mode data.
 
 ### External data source
 You can override the source directory with:

@@ -33,7 +33,12 @@ const validateProject = (project, fileName) => {
 const build = async () => {
   const entries = await fs.readdir(sourceDir, { withFileTypes: true })
   const yamlFiles = entries
-    .filter((entry) => entry.isFile() && (entry.name.endsWith('.yml') || entry.name.endsWith('.yaml')))
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        (entry.name.endsWith('.yml') || entry.name.endsWith('.yaml')) &&
+        !entry.name.includes('.private-example.')
+    )
     .map((entry) => entry.name)
     .sort()
 
@@ -42,6 +47,9 @@ const build = async () => {
   for (const fileName of yamlFiles) {
     const fullPath = path.join(sourceDir, fileName)
     const project = await parseProjectFile(fullPath)
+    if (!project || typeof project !== 'object') {
+      continue
+    }
     validateProject(project, fileName)
     projects.push(project)
   }

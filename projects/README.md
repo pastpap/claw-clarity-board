@@ -2,6 +2,23 @@
 
 This folder contains structured, dashboard-friendly project summaries.
 
+## Public mode vs private mode
+
+Claw Clarity Board is intended to support two operating modes.
+
+### Public mode
+- hosted on GitHub Pages or another public static host
+- should contain only safe, public, or sanitized project data
+- current default mode for this repository
+- currently ships only the `claw-clarity-board` project summary itself
+- EthicFlow and Pathlizr should not be bundled into the public build
+
+### Private mode
+- intended for real internal project state such as EthicFlow, Pathlizr, and future private projects
+- should not be deployed with public static hosting if the data is sensitive
+- can use external build-time data via `CLARITY_DATA_DIR`
+- likely hosting direction: local/private deployment with Tailscale access
+
 ## Purpose
 
 These files are the stable summary layer that sits between:
