@@ -110,7 +110,10 @@ function App() {
       <div className="dashboard-body">
         <aside className="dashboard-sidebar">
           <div className="sidebar-section-title">Navigation</div>
-          <button className={`sidebar-nav-item ${activeSection === 'projects' ? 'active' : ''}`}>
+          <button
+            className={`sidebar-nav-item ${activeSection === 'projects' ? 'active' : ''}`}
+            onClick={() => setSelectedProjectId(null)}
+          >
             <span className="sidebar-nav-dot" />
             <span>Projects</span>
           </button>

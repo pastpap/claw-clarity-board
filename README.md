@@ -10,6 +10,13 @@ Instead of turning project state into another disconnected tool, it reads struct
 - roadmap groups
 - source-of-truth document references
 - sync/confidence state
+- lightweight project metrics and progress visuals
+
+The UI is intentionally being shaped like a dashboard rather than a presentation page:
+- fixed header
+- sidebar navigation
+- project list as the default main view
+- detail view after selecting a project
 
 ## Concept
 

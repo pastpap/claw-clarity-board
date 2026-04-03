@@ -22,10 +22,12 @@ current_state:
   summary: >
     Claw Clarity Board now has a working Vite/React dashboard, a structured `projects/*.yml`
     summary format, generated build-time project data, and GitHub Pages deployment for public mode.
-    The intended next architecture is dual-mode: public mode with safe/demo data, and private mode
-    with real project data hosted privately, likely via local hosting and Tailscale.
+    The UI has been reshaped into a more dashboard-like structure with a fixed header, sidebar,
+    list-first project navigation, detail views, and lightweight project metrics/graphs. The intended
+    next architecture is dual-mode: public mode with safe/demo data, and private mode with real project
+    data hosted privately, likely via local hosting and Tailscale.
   focus:
-    - strengthen the dashboard UI and visual hierarchy
+    - refine dashboard navigation and UI clarity
     - define the dual-mode public/private operating model clearly
     - prepare for private data repo or local private data source integration
   blockers: []
@@ -42,6 +44,9 @@ done:
     - app refactored to use generated build-time project data
     - external data-source override added via CLARITY_DATA_DIR
     - GitHub Pages deployment workflow added and working
+    - public/private mode split implemented so public mode ships only Claw Clarity Board data
+    - UI refactored into fixed header, sidebar, list-first navigation, and project detail view
+    - project metrics, progress bars, and roadmap breakdown visuals added
 
 next:
   roadmap_groups:
