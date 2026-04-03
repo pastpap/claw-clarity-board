@@ -188,6 +188,9 @@
 
 .project-card-section {
   margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .project-card-section strong,
@@ -195,6 +198,7 @@
 .meta-stack strong,
 .detail-header-meta strong {
   color: var(--text-primary);
+  display: block;
 }
 
 .project-card-section ul,
