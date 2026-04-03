@@ -1,0 +1,101 @@
+version: 1
+
+project:
+  id: ethicflow
+  name: EthicFlow
+  kind: product
+  repo_path: ethic-flow
+  status: active
+  visibility: private
+  owner: nipanee
+
+identity:
+  one_liner: Workflow-centered, law-first AI governance for AI-supported business processes
+  current_phase: Configurable workflow depth and product credibility
+  primary_goal: Make AI governance operational inside real workflows
+  primary_users:
+    - compliance-aware builders and operators
+    - governance / responsible-AI stakeholders
+    - teams designing or reviewing AI-enabled business workflows
+    - consultants structuring AI use responsibly
+
+current_state:
+  summary: >
+    EthicFlow is already beyond concept stage. Landing page, onboarding/demo entry,
+    theme switching, dark-mode polish, SEO metadata, visible logo support, and /demo/
+    deployment fixes have been completed and merged into develop. The focus now shifts
+    toward deeper product capabilities rather than more front-door polish.
+  focus:
+    - roadmap definition for the next product-feature phase
+    - reusable workflow templates
+    - process node configuration
+    - stronger evidence and reporting depth
+  blockers: []
+  risks:
+    - roadmap and project-state knowledge can drift if docs, memory, and project YAML are not updated together
+
+done:
+  recent_milestones:
+    - landing page added as the new product entry point
+    - guided vs self-directed demo entry path introduced
+    - theme switching and broad dark-mode polish completed
+    - centralized theme token system added
+    - SEO metadata and visible logo support added
+    - /demo/ asset path issues fixed for static deployment
+    - landing/theme/SEO work merged into develop
+    - roadmap updated for the next real product-feature phase
+
+next:
+  roadmap_groups:
+    - name: Reusable workflow templates
+      status: planned
+      items:
+        - aviation industry workflow templates
+        - EthicFlow for EthicFlow founder / internal workflow template
+    - name: Process node configuration
+      status: planned
+      items:
+        - custom node type definitions from settings
+        - configurable metadata fields per node type
+        - node type can start as Human/System/AI and later be changed in the edit form
+        - editable EU AI Act article list before and after automatic generation
+        - auto-generation adds allowed articles only and does not overwrite user documentation choices
+    - name: Stronger reporting and export structure
+      status: planned
+      items:
+        - stronger report structure for governance and requirements workflows
+        - JSON export
+        - configurable export schema direction including Polarion-oriented requirements structures
+    - name: Process import and interoperability
+      status: planned
+      items:
+        - import from external tools
+        - DataHub exploration
+        - Collibra exploration
+    - name: Better evidence and documentation state tracking
+      status: planned
+      items: []
+    - name: Process review and approval workflow
+      status: planned
+      items: []
+    - name: Org / team features later
+      status: later
+      items: []
+
+sources:
+  canonical_docs:
+    - docs/product-direction.md
+    - docs/messaging.md
+    - docs/mvp-definition.md
+    - docs/roadmap.md
+    - docs/testing.md
+  memory_refs:
+    - memory/2026-03-31.md
+    - memory/2026-04-03.md
+
+sync:
+  docs_backed: true
+  last_updated: 2026-04-03
+  last_updated_by: wall-e
+  confidence: high
+  needs_review: false

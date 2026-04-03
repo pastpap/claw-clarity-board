@@ -1,0 +1,82 @@
+version: 1
+
+project:
+  id: pathlizr
+  name: Pathlizr
+  kind: product
+  repo_path: pathlizr
+  status: active
+  visibility: private
+  owner: nipanee
+
+identity:
+  one_liner: AI-powered skill mapping and growth planning based on work, hobbies, side projects, and life experience
+  current_phase: MVP for individual users with onboarding-first skill and recommendation flow
+  primary_goal: Help people discover transferable skills and turn them into personalized learning, pivot, and opportunity paths
+  primary_users:
+    - individuals exploring growth, career pivots, or side-hustle opportunities
+    - people adapting to a changing AI-shaped work landscape
+
+current_state:
+  summary: >
+    Pathlizr has moved from a simple learning-path idea toward an AI-powered skill mapping product.
+    The first onboarding-first MVP flow is implemented end-to-end, with persisted experience entries,
+    skill review, target selection, recommendation output, and onboarding completion state.
+  focus:
+    - strengthen skill inference beyond lightweight heuristics
+    - improve recommendation quality and explainability
+    - evolve onboarding outputs into a longer-term user skill model
+  blockers: []
+  risks:
+    - product direction can appear broader than the current implementation if messaging and roadmap are not kept aligned
+
+done:
+  recent_milestones:
+    - onboarding-first MVP flow implemented
+    - /start, /start/review, /start/target, and /start/recommendation flow established
+    - experience entries persisted in Firestore
+    - reviewed skills persisted in Firestore
+    - onboarding completion saved to the user profile
+    - dashboard reflects onboarding state and saved experiences
+    - product direction shifted from generic path tracking toward AI-powered skill mapping
+
+next:
+  roadmap_groups:
+    - name: Improve the intelligence layer
+      status: planned
+      items:
+        - better skill inference beyond keyword heuristics
+        - more personalized recommendation rationale
+        - stronger longer-term skill model
+        - possible CV upload as an accelerator
+        - future skill graph representation
+    - name: Templates and creator ecosystem
+      status: later
+      items:
+        - reusable path templates
+        - expert-created paths
+        - curated categories and verticals
+    - name: Team and HR use cases
+      status: later
+      items:
+        - manager or HR dashboards
+        - team skill visibility
+        - internal mobility and growth planning
+
+sources:
+  canonical_docs:
+    - docs/product-direction.md
+    - docs/messaging.md
+    - docs/roadmap.md
+    - docs/mvp-definition.md
+    - docs/data-model-review.md
+  memory_refs:
+    - memory/2026-03-28.md
+    - memory/2026-03-29.md
+
+sync:
+  docs_backed: true
+  last_updated: 2026-04-03
+  last_updated_by: wall-e
+  confidence: high
+  needs_review: false

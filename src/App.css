@@ -1,0 +1,314 @@
+.board-shell {
+  min-height: 100vh;
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.board-header h1 {
+  margin: 8px 0 12px;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.header-copy,
+.detail-summary,
+.body-copy,
+.empty-copy {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.header-copy {
+  max-width: 720px;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-strong);
+}
+
+.board-layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.project-list-panel,
+.project-detail-panel {
+  min-width: 0;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.project-card,
+.card,
+.header-meta-card {
+  border: 1px solid var(--border-default);
+  background: var(--bg-panel);
+  border-radius: 22px;
+  box-shadow: var(--shadow-card);
+}
+
+.project-card {
+  width: 100%;
+  text-align: left;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent-soft-border);
+}
+
+.project-card.selected {
+  border-color: var(--accent-strong);
+  box-shadow: 0 24px 50px rgba(44, 103, 242, 0.14);
+}
+
+.project-card-top,
+.section-heading-row,
+.roadmap-group-top,
+.detail-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.project-card-top h3,
+.card h3,
+.roadmap-group h4,
+.detail-hero h2 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.project-card-top p,
+.section-hint,
+.label,
+.project-card-footer,
+.meta-label,
+.meta-subtle {
+  color: var(--text-muted);
+}
+
+.project-card-top p {
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.project-card-section {
+  margin-top: 16px;
+}
+
+.project-card-section strong,
+.meta-table strong,
+.meta-stack strong {
+  color: var(--text-primary);
+}
+
+.project-card-section ul,
+.bullet-list,
+.timeline-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.project-card-footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.88rem;
+}
+
+.header-meta-card {
+  padding: 18px 20px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.header-meta-card strong {
+  font-size: 2rem;
+  color: var(--text-primary);
+}
+
+.card {
+  padding: 22px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.detail-grid .wide {
+  grid-column: span 2;
+}
+
+.detail-hero {
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+.detail-hero-main {
+  flex: 1;
+}
+
+.detail-hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 260px;
+}
+
+.meta-stack,
+.subsection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.meta-table {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.meta-table div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.roadmap-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.roadmap-group {
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 16px;
+  background: var(--bg-subtle);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.status-badge.green {
+  background: rgba(22, 163, 74, 0.12);
+  color: #166534;
+  border-color: rgba(22, 163, 74, 0.18);
+}
+
+.status-badge.red {
+  background: rgba(220, 38, 38, 0.12);
+  color: #991b1b;
+  border-color: rgba(220, 38, 38, 0.18);
+}
+
+.status-badge.blue {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+  border-color: rgba(37, 99, 235, 0.18);
+}
+
+.status-badge.amber {
+  background: rgba(217, 119, 6, 0.12);
+  color: #92400e;
+  border-color: rgba(217, 119, 6, 0.18);
+}
+
+.status-badge.violet,
+.status-badge.slate {
+  background: rgba(71, 85, 105, 0.12);
+  color: #334155;
+  border-color: rgba(71, 85, 105, 0.18);
+}
+
+.mono-list li {
+  font-family: var(--font-mono);
+  font-size: 0.93rem;
+}
+
+.compact li + li {
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  .board-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-grid,
+  .roadmap-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-grid .wide {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .board-shell {
+    padding: 20px;
+  }
+
+  .board-header,
+  .detail-hero,
+  .project-card-top,
+  .section-heading-row,
+  .roadmap-group-top {
+    flex-direction: column;
+  }
+
+  .header-meta-card,
+  .detail-hero-meta {
+    min-width: 0;
+  }
+
+  .project-card-footer,
+  .meta-table div {
+    flex-direction: column;
+  }
+}
