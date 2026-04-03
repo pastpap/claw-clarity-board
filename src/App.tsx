@@ -20,6 +20,72 @@ const roadmapTone: Record<RoadmapStatus, string> = {
   done: 'blue',
 }
 
+const roadmapWeights: Record<RoadmapStatus, number> = {
+  done: 1,
+  active: 0.8,
+  exploring: 0.55,
+  planned: 0.3,
+  later: 0.15,
+  blocked: 0.08,
+}
+
+const roadmapStatuses: RoadmapStatus[] = ['done', 'active', 'exploring', 'planned', 'later', 'blocked']
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value))
+}
+
+function confidenceScore(confidence: string) {
+  switch (confidence.toLowerCase()) {
+    case 'high':
+      return 95
+    case 'medium':
+      return 72
+    case 'low':
+      return 45
+    default:
+      return 60
+  }
+}
+
+function computeProjectHealth(project: ProjectSummary) {
+  let score = 45
+  if (project.sync.docs_backed) score += 20
+  score += project.sync.needs_review ? -12 : 8
+  score += Math.round((confidenceScore(project.sync.confidence) - 60) * 0.35)
+  score += project.current_state.blockers.length === 0 ? 12 : -project.current_state.blockers.length * 10
+  score -= Math.min(project.current_state.risks.length * 3, 12)
+  return clamp(score, 0, 100)
+}
+
+function computeRoadmapMaturity(project: ProjectSummary) {
+  const groups = project.next.roadmap_groups
+  if (groups.length === 0) return 0
+
+  const total = groups.reduce((sum, group) => sum + roadmapWeights[group.status], 0)
+  return Math.round((total / groups.length) * 100)
+}
+
+function getRoadmapBreakdown(project: ProjectSummary) {
+  return roadmapStatuses.map((status) => ({
+    status,
+    count: project.next.roadmap_groups.filter((group) => group.status === status).length,
+  }))
+}
+
+function computePortfolioStats(projectSummaries: ProjectSummary[]) {
+  const total = projectSummaries.length
+  const active = projectSummaries.filter((project) => project.project.status === 'active').length
+  const docsBacked = projectSummaries.filter((project) => project.sync.docs_backed).length
+  const avgHealth = total > 0 ? Math.round(projectSummaries.reduce((sum, project) => sum + computeProjectHealth(project), 0) / total) : 0
+  return {
+    total,
+    active,
+    docsBacked,
+    avgHealth,
+  }
+}
+
 function App() {
   const [activeSection] = useState<'projects'>('projects')
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
@@ -65,6 +131,8 @@ function App() {
 }
 
 function ProjectListView({ onSelectProject }: { onSelectProject: (projectId: string) => void }) {
+  const stats = computePortfolioStats(projects)
+
   return (
     <section className="view-section">
       <div className="view-header">
@@ -72,48 +140,80 @@ function ProjectListView({ onSelectProject }: { onSelectProject: (projectId: str
           <p className="section-eyebrow">Projects</p>
           <h2>Tracked projects</h2>
           <p className="section-copy">
-            Select a project to view its current phase, roadmap groups, recent milestones, and sync state.
+            Select a project to view its current phase, roadmap groups, recent milestones, sync state, and overall progress.
           </p>
         </div>
       </div>
 
+      <div className="overview-stats-grid">
+        <StatCard label="Total projects" value={String(stats.total)} helper="Tracked in the current dataset" />
+        <StatCard label="Active now" value={String(stats.active)} helper="Projects currently in motion" />
+        <StatCard label="Docs-backed" value={`${stats.docsBacked}/${stats.total}`} helper="Structured summaries tied to docs" />
+        <StatCard label="Average health" value={`${stats.avgHealth}%`} helper="Overall state across tracked projects" />
+      </div>
+
       <div className="project-list-grid">
-        {projects.map((project) => (
-          <button key={project.project.id} className="project-card" onClick={() => onSelectProject(project.project.id)}>
-            <div className="project-card-top">
-              <div>
-                <h3>{project.project.name}</h3>
-                <p>{project.identity.one_liner}</p>
+        {projects.map((project) => {
+          const health = computeProjectHealth(project)
+          const maturity = computeRoadmapMaturity(project)
+          const breakdown = getRoadmapBreakdown(project)
+
+          return (
+            <button key={project.project.id} className="project-card" onClick={() => onSelectProject(project.project.id)}>
+              <div className="project-card-top">
+                <div>
+                  <h3>{project.project.name}</h3>
+                  <p>{project.identity.one_liner}</p>
+                </div>
+                <StatusBadge label={project.project.status} tone={statusTone[project.project.status]} />
               </div>
-              <StatusBadge label={project.project.status} tone={statusTone[project.project.status]} />
-            </div>
 
-            <div className="project-card-section">
-              <span className="label">Current phase</span>
-              <strong>{project.identity.current_phase}</strong>
-            </div>
+              <div className="project-card-section">
+                <span className="label">Current phase</span>
+                <strong>{project.identity.current_phase}</strong>
+              </div>
 
-            <div className="project-card-section">
-              <span className="label">Current focus</span>
-              <ul>
-                {project.current_state.focus.slice(0, 3).map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
+              <div className="project-card-section">
+                <span className="label">Current focus</span>
+                <ul>
+                  {project.current_state.focus.slice(0, 3).map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
 
-            <div className="project-card-footer">
-              <span>Updated {project.sync.last_updated}</span>
-              <span>{project.sync.confidence} confidence</span>
-            </div>
-          </button>
-        ))}
+              <div className="project-card-section metric-stack">
+                <ProgressMetric label="Project health" value={health} />
+                <ProgressMetric label="Roadmap maturity" value={maturity} tone="secondary" />
+              </div>
+
+              <div className="project-card-section">
+                <div className="mini-chart-header">
+                  <span className="label">Roadmap status mix</span>
+                  <span className="chart-note">{project.next.roadmap_groups.length} groups</span>
+                </div>
+                <StatusBreakdownBar breakdown={breakdown} />
+              </div>
+
+              <div className="project-card-footer">
+                <span>Updated {project.sync.last_updated}</span>
+                <span>{project.sync.confidence} confidence</span>
+              </div>
+            </button>
+          )
+        })}
       </div>
     </section>
   )
 }
 
 function ProjectDetailView({ project, onBack }: { project: ProjectSummary; onBack: () => void }) {
+  const health = computeProjectHealth(project)
+  const maturity = computeRoadmapMaturity(project)
+  const confidence = confidenceScore(project.sync.confidence)
+  const breakdown = getRoadmapBreakdown(project)
+  const activeCount = project.next.roadmap_groups.filter((group) => group.status === 'active').length
+
   return (
     <section className="view-section">
       <div className="view-header detail-view-header">
@@ -134,7 +234,41 @@ function ProjectDetailView({ project, onBack }: { project: ProjectSummary; onBac
         </div>
       </div>
 
+      <div className="overview-stats-grid detail-stats-grid">
+        <StatCard label="Project health" value={`${health}%`} helper="Docs, blockers, review state, and confidence" />
+        <StatCard label="Roadmap maturity" value={`${maturity}%`} helper="Weighted by roadmap-group status" />
+        <StatCard label="Recent milestones" value={String(project.done.recent_milestones.length)} helper="Recorded completed progress points" />
+        <StatCard label="Active roadmap groups" value={String(activeCount)} helper="Groups currently in active implementation" />
+      </div>
+
       <div className="detail-grid">
+        <div className="card wide">
+          <div className="section-heading-row">
+            <h3>Project state</h3>
+            <span className="section-hint">Overall progress signals</span>
+          </div>
+          <div className="metric-panel-grid">
+            <ProgressMetric label="Project health" value={health} large />
+            <ProgressMetric label="Roadmap maturity" value={maturity} tone="secondary" large />
+            <ProgressMetric label="Knowledge confidence" value={confidence} tone="tertiary" large />
+          </div>
+          <div className="subsection chart-section">
+            <div className="mini-chart-header">
+              <span className="label">Roadmap status breakdown</span>
+              <span className="chart-note">By roadmap-group state</span>
+            </div>
+            <StatusBreakdownBar breakdown={breakdown} tall />
+            <div className="legend-row">
+              {breakdown.filter((item) => item.count > 0).map((item) => (
+                <span key={item.status} className="legend-chip">
+                  <span className={`legend-swatch ${roadmapTone[item.status]}`} />
+                  {item.status}: {item.count}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="card">
           <div className="section-heading-row">
             <h3>Current focus</h3>
@@ -239,6 +373,59 @@ function ProjectDetailView({ project, onBack }: { project: ProjectSummary; onBac
         </div>
       </div>
     </section>
+  )
+}
+
+function StatCard({ label, value, helper }: { label: string; value: string; helper: string }) {
+  return (
+    <div className="stat-card">
+      <span className="label">{label}</span>
+      <strong>{value}</strong>
+      <p>{helper}</p>
+    </div>
+  )
+}
+
+function ProgressMetric({
+  label,
+  value,
+  tone = 'primary',
+  large = false,
+}: {
+  label: string
+  value: number
+  tone?: 'primary' | 'secondary' | 'tertiary'
+  large?: boolean
+}) {
+  return (
+    <div className={`progress-metric ${large ? 'large' : ''}`}>
+      <div className="progress-metric-head">
+        <span className="label">{label}</span>
+        <strong>{value}%</strong>
+      </div>
+      <div className="progress-track">
+        <div className={`progress-fill ${tone}`} style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  )
+}
+
+function StatusBreakdownBar({
+  breakdown,
+  tall = false,
+}: {
+  breakdown: Array<{ status: RoadmapStatus; count: number }>
+  tall?: boolean
+}) {
+  const total = breakdown.reduce((sum, item) => sum + item.count, 0)
+
+  return (
+    <div className={`status-breakdown-bar ${tall ? 'tall' : ''}`}>
+      {breakdown.map((item) => {
+        const width = total === 0 ? 0 : (item.count / total) * 100
+        return <span key={item.status} className={`breakdown-segment ${roadmapTone[item.status]}`} style={{ width: `${width}%` }} />
+      })}
+    </div>
   )
 }
 
