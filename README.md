@@ -2,7 +2,7 @@
 
 Claw Clarity Board is a lightweight dashboard for visualizing structured project knowledge.
 
-Instead of turning project state into another disconnected tool, it reads human-maintained YAML summaries from `projects/*.yml` and renders:
+Instead of turning project state into another disconnected tool, it reads structured project summaries and renders:
 - project identity
 - current phase
 - current focus
@@ -24,6 +24,32 @@ This project is built around a simple layered model:
 V1 tracks:
 - EthicFlow
 - Pathlizr
+
+## External build-time data model
+
+The app is prepared for external project data.
+
+### Default behavior
+By default, the build script reads YAML files from:
+- `./projects`
+
+and generates:
+- `src/generated/projects.json`
+
+### External data source
+You can override the source directory with:
+
+```bash
+CLARITY_DATA_DIR=../claw-clarity-data/projects npm run build
+```
+
+or for development:
+
+```bash
+CLARITY_DATA_DIR=../claw-clarity-data/projects npm run dev
+```
+
+This allows the app code to stay public while project data can come from a separate private repo at build time.
 
 ## Development
 
